@@ -1,4 +1,4 @@
 language: python
 apt:
   - terraform
-install: true
+script: true
