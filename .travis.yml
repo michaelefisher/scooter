@@ -1,7 +1,6 @@
 sudo: false
 language: python
-apt:
-  packages:
-    - terraform
-script: true
-install: terraform validate
+install: 
+ - wget https://releases.hashicorp.com/terraform/0.11.1/terraform_0.11.1_linux_amd64.zip
+ - unzip terraform_0.11.1_linux_amd64.zip 
+script: terraform validate
