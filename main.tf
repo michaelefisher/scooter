@@ -1,6 +1,7 @@
 # Configure the DigitalOcean Provider
 provider "digitalocean" {
   token = "${var.do_token}"
+  version = "~> 0.1"
 }
 
 # Create a new tag
@@ -34,10 +35,10 @@ resource "digitalocean_droplet" "mail" {
   tags = ["${digitalocean_tag.mail.id}"]
 }
 
-resource "digitalocean_firewall" "web" {
+resource "digitalocean_firewall" "mail" {
   name = "${var.name}-server"
 
-  droplet_ids = ["${digitalocean_droplet.mail.d}"]
+  droplet_ids = ["${digitalocean_droplet.mail.id}"]
   tags = ["${digitalocean_tag.mail.id}"]
 
   inbound_rule = [

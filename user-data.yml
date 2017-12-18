@@ -19,7 +19,7 @@ write_files:
         mailserver:
           image: hardware/mailserver:1.1-stable
           container_name: mailserver
-          domainname: "${var.domain}"                 # Mail server A/MX/FQDN & reverse PTR = mail.domain.tld.
+          domainname: "${domain}"                 # Mail server A/MX/FQDN & reverse PTR = mail.domain.tld.
           hostname: mail
           # restart: always
           # extra_hosts:                          - Required for external database (on other server or for local databases on host without docker)
@@ -33,8 +33,8 @@ write_files:
             - "993:993"     # IMAPS      SSL/TLS  - Optional - For webmails/desktop clients
             - "4190:4190"   # SIEVE      STARTTLS - Optional - Recommended for mail filtering
           environment:
-            - DBPASS="${var.database_password}"                      # MariaDB database password (required)
-            - RSPAMD_PASSWORD="${var.database_password}"             # Rspamd WebUI password (required)
+            - DBPASS="${database_password}"                      # MariaDB database password (required)
+            - RSPAMD_PASSWORD="${database_password}"             # Rspamd WebUI password (required)
           # - ENABLE_FETCHMAIL=true               # Enable fetchmail forwarding
           # - DISABLE_CLAMAV=true                 # Disable virus scanning
           # - DISABLE_SIGNING=true                # Disable DKIM/ARC signing
@@ -61,7 +61,7 @@ write_files:
           hostname: mail
           # restart: always
           environment:
-            - DBPASS="${var.database_password}"
+            - DBPASS="${database_password}"
           depends_on:
             - mailserver
             - mariadb
@@ -96,10 +96,10 @@ write_files:
           # restart: always
           # Info : These variables are ignored when the volume already exists (databases created before).
           environment:
-            - MYSQL_ROOT_PASSWORD="${var.database_password}"
+            - MYSQL_ROOT_PASSWORD="${database_password}"
             - MYSQL_DATABASE=postfix
             - MYSQL_USER=postfix
-            - MYSQL_PASSWORD="${var.database_password}"
+            - MYSQL_PASSWORD="${database_password}"
           volumes:
             - /mnt/docker/mysql/db:/var/lib/mysql
 
@@ -118,4 +118,4 @@ write_files:
           permissions: '0644'
 
 mounts:
- - "${var.mounts}, /, "auto", "defaults,nofail", "0", "0"
+ - "${mounts}, /, "auto", "defaults,nofail", "0", "0"
