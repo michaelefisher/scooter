@@ -1,11 +1,14 @@
 sudo: false
 language: python
 env:
- - PATH=$PATH:$TRAVIS_BUILD_DIR # add travis build directory to PATH
-install: 
- - wget https://releases.hashicorp.com/terraform/0.11.1/terraform_0.11.1_linux_amd64.zip
- - unzip terraform_0.11.1_linux_amd64.zip 
+  global:
+  - PATH=$PATH:$TRAVIS_BUILD_DIR
+  - secure: bq+nbUF9rlolS5y72bbrJKJMBTCjA6r9HhNh+VZPqeP6QGfdgC2eHQIi0JlmAhAToY6JpvcTTQfrj2RDC+ARj9VYN+zcTBHXyxYEx8VsfhMnjqxQB2ovH24/m05RCtnuNzMSbnlxV6WSpbJ6yiocqOa/lTclysm5ItYg+KR+aegQTvM3XxO4ywdn4vczqFyuYZAxRfq4cdKR2QCERkq2oQnRTMl+vpGAASkyz+CF2Se5eG/Fyqz4Hrk6frEu7UUpDcdgPxHjiFuj5jpqIfDbj5bS0pmdYIlGjpiE3TSchPZ0ZpTSbifFrcwmeLATeDseU4O6ESF7CyR+ym+eLntX2uEPtCM9PYLN3pKhEwFB/u8Me4S7cFo5Ck4NhZqLRiWEvDsssTzg9d5AQ85pmGL9jcb4RGTKyP4HowTpBWjgwbeqXQjrIAQTYJivto+l74Xc8yqzX/cxhCj/eEX8nPW7kiZa+zs0/BnfCxKFeIwSSEqcvwyWT22kkHrq29YpbuXZqWCiZFREfWuMvTrmNH+EEeBuzkjwTpIXZske4OmyfL/RG16Iufg3aWPQB/wh5+Kmb/CWG3okip4pH9hs1ZoPCbOc8YJkdKUgUk8IsvAZ/3tt+gdrUXRfRHM00E7884CYo7rkwacbIN1FhlzMPHNqVja+B/NthlciCvrZc7kVNgQ=
+  - secure: i1QfHI4p/a9u8qPC2GHnBGE6nM//jzas5QaiuLW7l/i9Yuj8oOD/ZLv3gWprSeyOhWUg6X9bX1RJpF5r5N/F4169ac6vEjxjEYHdODIY/6gBmiSBFcI5v2PxC8p0hhA/BNtLC7+lvvbLPJiks+6TwsoTTtu+VupF6r4Zr4xTCZ36bNDxL1PYpnRyBFvWc1Lrf14UTAM3PYQnteW4wQf7zwI3mpmI40nTtZQOzmJFhCLuSlFJFND3ZIEMRI55gwEwQkw54y4RAW0ynsExVp+M98spDeLUeEcuuBtCQTD6DgDUKdWAARaExjzdxiCcy/HIuuK0V4eZcveZyc8PTFUm+ZRujPhrEZuy+G/FSp8YrytTgy2E+IXaMX5awEsUnYs3fZkPTX4CvxwEKPxK0fqGTVCiMLzjEba+6whQsuoHOQ9WYvgD+cdvFvGUKLl0ZC0Fkz7B67MxrXYh9zQIp06tXAqOA5GG4pD+6AYaJBlRhdsnGYbykhW2c2LNmHrlBXqT1Md8O6rLfATroHyTsw8+BDscvtHNz3H7oM0Z5bkX68HhW3HWIfpRDUlqJsWrvdKMiJuHc/8hewEA6wPVsyu+BJX3lax9PolBfwcROYFM2T96iUcmr0PvI3ftoopUgo3rPxYEs93U3QgB4uB3WpiW7Gt+r61yuJZRTxTe/duzoYA=
+install:
+- wget https://releases.hashicorp.com/terraform/0.11.1/terraform_0.11.1_linux_amd64.zip
+- unzip terraform_0.11.1_linux_amd64.zip
 script:
- - terraform init
- - terraform get
- - terraform validate
+- terraform init
+- terraform get
+- terraform validate
