@@ -1,7 +1,7 @@
 sudo: false
 language: python
 env:
- - PATH:=$PATH:$CWD
+ - PATH=$PATH:$TRAVIS_BUILD_DIR # add travis build directory to PATH
 install: 
  - wget https://releases.hashicorp.com/terraform/0.11.1/terraform_0.11.1_linux_amd64.zip
  - unzip terraform_0.11.1_linux_amd64.zip 
