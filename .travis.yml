@@ -1,4 +1,7 @@
+sudo: false
 language: python
 apt:
-  - terraform
+  packages:
+    - terraform
 script: true
+install: terraform validate
