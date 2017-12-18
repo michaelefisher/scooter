@@ -12,3 +12,4 @@ script:
 - terraform init
 - terraform get
 - terraform validate
+- terraform plan
