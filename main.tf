@@ -18,11 +18,6 @@ data "template_file" "user-data" {
   }
 }
 
-data "template_file" "docker-compose" {
-  template = "${file("./docker-compose.yml")}"
-
-}
-
 resource "digitalocean_volume" "storage" {
   region      = "${var.region}"
   name        = "${var.name}-volume"
