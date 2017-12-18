@@ -1,0 +1,121 @@
+#cloud-config
+# vim: syntax=yaml
+#
+# This is the configuration syntax that the write_files module
+# will know how to understand. encoding can be given b64 or gzip or (gz+b64).
+# The content will be decoded accordingly and then written to the path that is
+# provided. 
+#
+# Note: Content strings here are truncated for example purposes.
+write_files:
+-   encoding: b64
+    owner: root:root
+    path: /mnt/docker/
+    permissions: '0644'
+    content: |
+      version: '2.1'
+
+      services:
+        mailserver:
+          image: hardware/mailserver:1.1-stable
+          container_name: mailserver
+          domainname: "${var.domain}"                 # Mail server A/MX/FQDN & reverse PTR = mail.domain.tld.
+          hostname: mail
+          # restart: always
+          # extra_hosts:                          - Required for external database (on other server or for local databases on host without docker)
+          #  - "mariadb:xx.xx.xx.xx"              - Replace with IP address of MariaDB server
+          #  - "redis:xx.xx.xx.xx"                - Replace with IP address of Redis server
+          ports:
+            - "25:25"       # SMTP                - Required
+            - "143:143"     # IMAP       STARTTLS - Optional - For webmails/desktop clients
+            - "465:465"     # SMTPS      SSL/TLS  - Optional - Enabled for compatibility reason, otherwise disabled
+            - "587:587"     # Submission STARTTLS - Optional - For webmails/desktop clients
+            - "993:993"     # IMAPS      SSL/TLS  - Optional - For webmails/desktop clients
+            - "4190:4190"   # SIEVE      STARTTLS - Optional - Recommended for mail filtering
+          environment:
+            - DBPASS="${var.database_password}"                      # MariaDB database password (required)
+            - RSPAMD_PASSWORD="${var.database_password}"             # Rspamd WebUI password (required)
+          # - ENABLE_FETCHMAIL=true               # Enable fetchmail forwarding
+          # - DISABLE_CLAMAV=true                 # Disable virus scanning
+          # - DISABLE_SIGNING=true                # Disable DKIM/ARC signing
+          # - DISABLE_GREYLISTING=true            # Disable greylisting policy
+          # - DISABLE_RATELIMITING=true           # Disable ratelimiting policy
+          #
+          # Full list : https://github.com/hardware/mailserver#environment-variables
+          #
+          volumes:
+            - /mnt/docker/mail:/var/mail
+            - /mnt/docker/nginx/certs:/etc/letsencrypt
+          depends_on:
+            - mariadb
+            - redis
+
+        # Administration interface
+        # https://github.com/hardware/postfixadmin
+        # http://postfixadmin.sourceforge.net/
+        # Configuration : https://github.com/hardware/mailserver/wiki/Postfixadmin-initial-configuration
+        postfixadmin:
+          image: hardware/postfixadmin
+          container_name: postfixadmin
+          domainname: domain.tld
+          hostname: mail
+          # restart: always
+          environment:
+            - DBPASS="${var.database_password}"
+          depends_on:
+            - mailserver
+            - mariadb
+
+        # Web server
+        # https://github.com/Wonderfall/dockerfiles/tree/master/boring-nginx
+        # https://nginx.org/
+        # Configuration : https://github.com/hardware/mailserver/wiki/Reverse-proxy-configuration
+        nginx:
+          image: wonderfall/boring-nginx
+          container_name: nginx
+          # restart: always
+          ports:
+            - "80:8000"
+            - "443:4430"
+          volumes:
+            - /mnt/docker/nginx/sites-enabled:/sites-enabled
+            - /mnt/docker/nginx/conf:/conf.d
+            - /mnt/docker/nginx/log:/var/log/nginx
+            - /mnt/docker/nginx/certs:/certs
+          depends_on:
+            - mailserver
+            - postfixadmin
+            - rainloop
+
+        # Database
+        # https://github.com/docker-library/mariadb
+        # https://mariadb.org/
+        mariadb:
+          image: mariadb:10.2
+          container_name: mariadb
+          # restart: always
+          # Info : These variables are ignored when the volume already exists (databases created before).
+          environment:
+            - MYSQL_ROOT_PASSWORD="${var.database_password}"
+            - MYSQL_DATABASE=postfix
+            - MYSQL_USER=postfix
+            - MYSQL_PASSWORD="${var.database_password}"
+          volumes:
+            - /mnt/docker/mysql/db:/var/lib/mysql
+
+        # Cache Database
+        # https://github.com/docker-library/redis
+        # https://redis.io/
+        redis:
+          image: redis:4.0-alpine
+          container_name: redis
+          # restart: always
+          command: redis-server --appendonly yes
+          volumes:
+            - /mnt/docker/redis/db:/data
+          owner: root:root
+          path: /
+          permissions: '0644'
+
+mounts:
+ - "${var.mounts}, /, "auto", "defaults,nofail", "0", "0"
