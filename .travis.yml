@@ -10,7 +10,7 @@ env:
 install:
 - wget https://releases.hashicorp.com/terraform/0.11.1/terraform_0.11.1_linux_amd64.zip
 - unzip terraform_0.11.1_linux_amd64.zip
-- pip install --user s3cmd
+- pip install s3cmd
 script:
 - terraform init
 - terraform get
