@@ -17,3 +17,4 @@ script:
 - terraform get
 - terraform validate
 - terraform plan
+- terraform apply
