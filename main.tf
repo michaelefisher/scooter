@@ -13,17 +13,9 @@ data "template_file" "user-data" {
   template = "${file("./user-data.yml")}"
 
   vars {
-    mounts = "${var.volume_name}"
     domain = "${var.domain}"
     database_password = "${var.database_password}"
   }
-}
-
-resource "digitalocean_volume" "storage" {
-  region      = "${var.region}"
-  name        = "${var.name}-volume"
-  size        = "${var.volume_size}"
-  description = "${var.volume_description}"
 }
 
 resource "digitalocean_droplet" "mail" {

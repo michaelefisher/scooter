@@ -21,18 +21,6 @@ variable "instance_size" {
     default = "3gb"
 }
 
-variable "volume_size" {
-    default = 25
-}
-
-variable "volume_description" {
-    default = "Persistent file storage for email"
-}
-
-variable "volume_name" {
-    default = "volume-nyc3-01"
-}
-
 variable "domain" {
     default = "michaelfisher.org"
 }
