@@ -22,7 +22,7 @@ variable "instance_size" {
 }
 
 variable "volume_size" {
-    default = "25"
+    default = "25gb"
 }
 
 variable "volume_description" {
