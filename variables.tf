@@ -22,7 +22,7 @@ variable "instance_size" {
 }
 
 variable "volume_size" {
-    default = 100
+    default = 25
 }
 
 variable "volume_description" {
